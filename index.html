@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Presente Surpresa 🎁</title>
+
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+      overflow: hidden;
+    }
+
+    .item {
+      position: absolute;
+      cursor: pointer;
+      transition: transform 0.2s ease, left 0.3s ease, top 0.3s ease;
+    }
+
+    #presente,
+    #envelope {
+      font-size: 4rem;
+    }
+
+    #envelope {
+      display: none;
+    }
+
+    #hint {
+      position: absolute;
+      top: 80px;
+      width: 100%;
+      text-align: center;
+      font-size: 1rem;
+      color: #fff;
+      opacity: 0.9;
+    }
+
+    .tremendo {
+      animation: shake 0.3s;
+    }
+
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-5px); }
+      100% { transform: translateX(0); }
+    }
+
+    #overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+
+    #mensagem {
+      background: #fff;
+      color: #333;
+      padding: 40px;
+      border-radius: 20px;
+      max-width: 420px;
+      text-align: center;
+      animation: zoom 0.5s ease;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+
+    #mensagem small {
+      display: none;
+      margin-top: 15px;
+      color: #ff6f91;
+      font-weight: bold;
+    }
+
+    @keyframes zoom {
+      from { transform: scale(0); }
+      to { transform: scale(1); }
+    }
+
+    #rever {
+      margin-top: 20px;
+      padding: 12px 26px;
+      border: none;
+      border-radius: 25px;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .confete {
+      position: fixed;
+      font-size: 1.5rem;
+      animation: cair 3s linear forwards;
+    }
+
+    @keyframes cair {
+      from { transform: translateY(-50px); opacity: 1; }
+      to { transform: translateY(100vh); opacity: 0; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="hint"></div>
+
+  <div id="presente" class="item">🎁</div>
+  <div id="envelope" class="item">💌</div>
+
+  <div id="overlay">
+    <div id="mensagem">
+      <h2>🎉 Feliz Aniversário! 🎂<br>
+	<h2> By Silas Martins</h2><br><br>
+      <p>
+        Que seu dia seja incrível e cheio de alegria,<br>
+        amor e surpresas boas.<br><br>
+
+        Espero que aproveite esse novo ciclo e que<br>
+        papai do céu abençoe cada novo passo teu.<br><br>
+
+        Parabéns por ter se tornado essa pessoa<br>
+        incrível e cheio de sonhos 🥳✨<br><br>
+
+
+      </p>
+      <small id="segredo">💖 Se você chegou até aqui, saiba que você é muito especial pra mim.</small>
+      <button id="rever">Ver novamente</button>
+    </div>
+  </div>
+
+  <audio id="somFuga">
+    <source src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg">
+  </audio>
+
+  <audio id="somFinal">
+    <source src="https://actions.google.com/sounds/v1/alarms/celebration_opening.ogg">
+  </audio>
+
+  <audio id="musicaFundo" loop>
+    <source src="https://actions.google.com/sounds/v1/ambiences/soft_wind_chimes.ogg">
+  </audio>
+
+  <script>
+    const presente = document.getElementById('presente');
+    const envelope = document.getElementById('envelope');
+    const overlay = document.getElementById('overlay');
+    const hint = document.getElementById('hint');
+    const botaoRever = document.getElementById('rever');
+    const segredo = document.getElementById('segredo');
+
+    const somFuga = document.getElementById('somFuga');
+    const somFinal = document.getElementById('somFinal');
+    const musicaFundo = document.getElementById('musicaFundo');
+
+    let tentativasPresente = 0;
+    let tentativasEnvelope = 0;
+    let musicaIniciada = false;
+    let toqueSegredo;
+
+    const frasesEnvelope = [
+      'Oi…',
+      'Ok, agora é sério 😅',
+      'Prometo que é a última',
+      'Mentira…',
+      'Confia em mim 😂',
+      'esta quase lá',
+      'Clica só mais uma vez',
+      'Só mais uma',
+      'Deu ruim',
+      'Você está pronto?'
+    ];
+
+    function mover(el) {
+      el.style.left = Math.random() * (window.innerWidth - 80) + 'px';
+      el.style.top = Math.random() * (window.innerHeight - 80) + 'px';
+    }
+
+    mover(presente);
+
+    presente.addEventListener('click', () => {
+      if (!musicaIniciada) {
+        musicaFundo.volume = 0.3;
+        musicaFundo.play();
+        musicaIniciada = true;
+      }
+
+      tentativasPresente++;
+      presente.style.transform = `scale(${1 + tentativasPresente * 0.05})`;
+
+      if (tentativasPresente < 10) {
+        somFuga.play();
+        presente.classList.add('tremendo');
+        setTimeout(() => presente.classList.remove('tremendo'), 300);
+        mover(presente);
+      } else {
+        presente.style.display = 'none';
+        envelope.style.display = 'block';
+        hint.innerText = frasesEnvelope[0];
+        mover(envelope);
+      }
+    });
+
+    envelope.addEventListener('click', () => {
+      tentativasEnvelope++;
+      envelope.style.transform = `scale(${1 + tentativasEnvelope * 0.07})`;
+      hint.innerText = frasesEnvelope[tentativasEnvelope % frasesEnvelope.length];
+
+      if (tentativasEnvelope < 10) {
+        mover(envelope);
+      } else {
+        hint.innerText = '';
+        somFinal.play();
+        musicaFundo.volume = 0.15;
+        overlay.style.display = 'flex';
+
+        for (let i = 0; i < 30; i++) {
+          setTimeout(() => {
+            const c = document.createElement('div');
+            c.className = 'confete';
+            c.innerText = ['🎉','✨','💖'][Math.floor(Math.random()*3)];
+            c.style.left = Math.random() * window.innerWidth + 'px';
+            document.body.appendChild(c);
+            setTimeout(() => c.remove(), 3000);
+          }, i * 100);
+        }
+      }
+    });
+
+    // Easter Egg: pressionar a carta por 3 segundos
+    document.getElementById('mensagem').addEventListener('touchstart', () => {
+      toqueSegredo = setTimeout(() => {
+        segredo.style.display = 'block';
+      }, 3000);
+    });
+
+    document.getElementById('mensagem').addEventListener('touchend', () => {
+      clearTimeout(toqueSegredo);
+    });
+
+    botaoRever.addEventListener('click', () => location.reload());
+  </script>
+
+</body>
+</html>
